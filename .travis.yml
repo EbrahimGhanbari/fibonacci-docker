@@ -7,7 +7,7 @@ before_install:
   - docker build -t ebigh1368/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true ebigh1368/react-test npm test
+  - docker run -e CI=true ebigh1368/react-test npm test -- --coverage
 
 after_success:
   - docker build -t ebigh1368/multi-client ./client
