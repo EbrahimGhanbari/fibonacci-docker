@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t ebigh1368/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true ebigh1368/react-test npm test
+
+after_success:
+  - docker build -t ebigh1368/multi-client ./client
+  - docker build -t ebigh1368/multi-nginx ./nginx
+  - docker build -t ebigh1368/multi-server ./server
+  - docker build -t ebigh1368/multi-worker ./worker
+  # login to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take images and push them to docker hub
+  docker push ebigh1368/multi-client
+  docker push ebigh1368/multi-nginx
+  docker push ebigh1368/multi-server
+  docker push ebigh1368/multi-worker
